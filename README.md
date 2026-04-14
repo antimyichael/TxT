@@ -2,6 +2,8 @@
 
 TxT is a native macOS plain-text editor inspired by Windows 10 Notepad.
 
+<img src="screenshot.png">
+
 The goal of this project is to recreate the familiar Notepad workflow on macOS while keeping native AppKit/SwiftUI behavior:
 - single-window document editing per file
 - plain text only (`NSTextView`)

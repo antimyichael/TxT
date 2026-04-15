@@ -147,6 +147,24 @@ private extension Data {
 final class TxTDocument: NSDocument, ObservableObject {
     override class var autosavesInPlace: Bool { false }
 
+    // Accept common text-based formats while still writing plain text by default.
+    override class var readableTypes: [String] {
+        [
+            UTType.plainText.identifier,
+            UTType.text.identifier,
+            UTType.utf8PlainText.identifier,
+            UTType.utf16PlainText.identifier,
+            UTType.json.identifier,
+            UTType.xml.identifier,
+            UTType.sourceCode.identifier,
+            UTType.commaSeparatedText.identifier
+        ]
+    }
+
+    override class var writableTypes: [String] {
+        [UTType.plainText.identifier]
+    }
+
     @Published var lineEnding: LineEndingStyle = .lf
     @Published var encodingChoice: EncodingChoice = .utf8
     @Published var wordWrap: Bool = Preferences.wordWrap

@@ -16,15 +16,21 @@ final class TxTDocumentController: NSDocumentController {
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    private var launchedWithExternalOpenRequest = false
+
     func applicationWillFinishLaunching(_ notification: Notification) {
         _ = TxTDocumentController()
     }
 
     func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
-        CommandLine.arguments.count <= 1
+        // Avoid automatic untitled windows; we create one manually only when appropriate.
+        false
     }
 
     func application(_ application: NSApplication, open urls: [URL]) {
+        if !urls.isEmpty {
+            launchedWithExternalOpenRequest = true
+        }
         for url in urls {
             NSDocumentController.shared.openDocument(withContentsOf: url, display: true) { _, _, _ in }
         }
@@ -39,9 +45,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             guard !isDir.boolValue else { continue }
             NSDocumentController.shared.openDocument(withContentsOf: url, display: true) { _, _, _ in }
             openedFromCommandLine = true
+            launchedWithExternalOpenRequest = true
         }
 
-        if !openedFromCommandLine, CommandLine.arguments.count <= 1, NSDocumentController.shared.documents.isEmpty {
+        if !openedFromCommandLine,
+           !launchedWithExternalOpenRequest,
+           CommandLine.arguments.count <= 1,
+           NSDocumentController.shared.documents.isEmpty {
             NSDocumentController.shared.newDocument(nil)
         }
 
